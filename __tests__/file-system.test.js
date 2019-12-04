@@ -9,21 +9,16 @@ const {
 
 const fs = require('fs').promises;
 
-jest.mock('fs', () => {
-  return {
-    promises: {
-      mkdir: jest.fn(() => Promise.resolve()),
-      writeFile: jest.fn(() => Promise.resolve()),
-      readFile: jest.fn(() => Promise.resolve(JSON.stringify({
-        height: 17,
-        color: 'blue',
-      }))),
-      readDirectoryJSON: jest.fn(() => Promise.resolve()),
-      updateJSON: jest.fn(() => Promise.resolve()),
-      deleteFile: jest.fn(() => Promise.resolve()),
-    }
-  };
-}
+jest.mock('fs', () => ({
+  promises: {
+    mkdir: jest.fn(() => Promise.resolve()),
+    writeFile: jest.fn(() => Promise.resolve()),
+    readFile: jest.fn(() => Promise.resolve(JSON.stringify({ one: 1, two: 2 }))),
+    readdir: jest.fn(() => Promise.resolve(['file1', 'file2'])),
+    updateJSON: jest.fn(() => Promise.resolve()),
+    deleteFile: jest.fn(() => Promise.resolve()),
+  }
+})
 );
 
 describe('File System Functions', () => {
@@ -46,10 +41,17 @@ describe('File System Functions', () => {
     });
     it('parses JSON returned from readFile', () => {
       return readJSON('some-path')
-        .then(result => expect(result).toEqual({
-          height: 17,
-          color: 'blue',
-        }));
+        .then(result => expect(result).toEqual({ one: 1, two: 2 }));
+    });
+  });
+  describe('readDirectoryJSON', () => {
+    it('calls passes path through to fs function', () => {
+      return readDirectoryJSON('some-path')
+        .then(() => expect(fs.readdir).toHaveBeenCalledWith('some-path'));
+    });
+    it('returns an array of objects representing the file contents', () => {
+      return readDirectoryJSON('some-path')
+        .then(result => expect(result).toEqual([{ one: 1, two: 2 }, { one: 1, two: 2 }]));
     });
   });
 });
