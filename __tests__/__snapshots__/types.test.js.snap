@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`validator module casters throws if value is not castable to array 1`] = `"Cannot read property 'toString' of null"`;
+
+exports[`validator module casters throws if value is not castable to array 2`] = `"Cannot read property 'toString' of undefined"`;
+
+exports[`validator module casters throws if value is not castable to number 1`] = `"Cannot cast >>hi<< to Number"`;
+
+exports[`validator module casters throws if value is not castable to number 2`] = `"Cannot cast >>[object Object]<< to Number"`;
+
+exports[`validator module casters throws if value is not castable to string 1`] = `"Cannot read property 'toString' of null"`;
+
+exports[`validator module casters throws if value is not castable to string 2`] = `"Cannot read property 'toString' of undefined"`;
