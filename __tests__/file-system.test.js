@@ -15,8 +15,7 @@ jest.mock('fs', () => ({
     writeFile: jest.fn(() => Promise.resolve()),
     readFile: jest.fn(() => Promise.resolve(JSON.stringify({ one: 1, two: 2 }))),
     readdir: jest.fn(() => Promise.resolve(['file1', 'file2'])),
-    updateJSON: jest.fn(() => Promise.resolve()),
-    deleteFile: jest.fn(() => Promise.resolve()),
+    unlink: jest.fn(() => Promise.resolve()),
   }
 })
 );
@@ -45,13 +44,25 @@ describe('File System Functions', () => {
     });
   });
   describe('readDirectoryJSON', () => {
-    it('calls passes path through to fs function', () => {
+    it('passes path through to fs function', () => {
       return readDirectoryJSON('some-path')
         .then(() => expect(fs.readdir).toHaveBeenCalledWith('some-path'));
     });
     it('returns an array of objects representing the file contents', () => {
       return readDirectoryJSON('some-path')
         .then(result => expect(result).toEqual([{ one: 1, two: 2 }, { one: 1, two: 2 }]));
+    });
+  });
+  describe('updateJSON', () => {
+    it('updates a key in a saved object', () => {
+      return updateJSON('some-path', { two : 999 })
+        .then(() => expect(fs.writeFile).toHaveBeenLastCalledWith('some-path', JSON.stringify({ one: 1, two : 999 })));
+    });
+  });
+  describe('deleteFile', () => {
+    it('passes through the path to fs.unlink', () => {
+      return deleteFile('some-path')
+        .then(() => expect(fs.unlink).toHaveBeenCalledWith('some-path'));
     });
   });
 });
